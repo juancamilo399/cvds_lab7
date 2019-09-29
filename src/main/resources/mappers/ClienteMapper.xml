@@ -42,33 +42,45 @@
 		<result property='telefono' column='telefono'/> 
 		<result property='email' column='email'/>  
 		<result property='vetado' column='vetado'/>      
-		<collection property='rentados' ofType='ItemRentado' resultMap="ItemRentadoResult" columnPrefix="ir_"></collection>
+		<collection property='rentados' ofType='ItemRentado'
+					resultMap="edu.eci.cvds.sampleprj.dao.mybatis.mappers.ItemRentadoMapper.ItemRentadoResult" columnPrefix="ir_"></collection>
 	</resultMap>
 
-	<resultMap type='ItemRentado' id='ItemRentadoResult'>
-		<id property='id' column='id'/>
-		<result property='fechainiciorenta' column='fechainiciorenta'/>
-		<result property='fechafinrenta' column='fechafinrenta'/>
-		<association property="item" javaType="Item" resultMap="ItemResult" columnPrefix="i_" ></association>
-	</resultMap>
+	<insert id="agregarItemRentadoACliente" parameterType="map" >
+		insert into VI_ITEMRENTADO(CLIENTES_documento,ITEMS_id,fechainiciorenta, fechafinrenta) values (#{idcl},#{idit},#{Fechai},#{Fechaf});
+	</insert>
 
-	<resultMap type='Item' id='ItemResult'>
-		<id property='id' column='id'/>
-		<result property='nombre' column='nombre'/>
-		<result property='descripcion' column='descripcion'/>
-		<result property='fechaLanzamiento' column='fechalanzamiento'/>
-		<result property='tarifaxDia' column='tarifaxdia'/>
-		<result property='formatoRenta' column='formatorenta'/>
-		<result property='genero' column='genero'/>
-		<association property="tipo" javaType="TipoItem" columnPrefix="ti_" resultMap="TipoItemResult" ></association>
-	</resultMap>
+	<select parameterType="map" id="consultarCliente" resultMap="ClienteResult">
+	select
 
-	<resultMap type='TipoItem' id='TipoItemResult'>
-		<id property='id' column='id'/>
-		<result property='descripcion' column='descripcion'/>
-	</resultMap>
+	c.nombre ,
+	c.documento,
+	c.telefono,
+	c.direccion,
+	c.email,
+	c.vetado,
+
+	ir.id  as ir_id,
+	ir.fechainiciorenta as ir_fechainiciorenta ,
+	ir.fechafinrenta  as ir_fechafinrenta,
+
+	i.id as ir_i_id ,
+	i.nombre as ir_i_nombre,
+	i.descripcion as ir_i_descripcion,
+	i.fechalanzamiento as ir_i_fechalanzamiento ,
+	i.tarifaxdia as ir_i_tarifaxdia ,
+	i.formatorenta  as ir_i_formatorenta,
+	i.genero  as ir_i_genero,
+
+	ti.id  as ir_i_tiid,
+	ti.descripcion as ir_i_ti_descripcion
 
 
-
+	FROM VI_CLIENTES as c
+	left join VI_ITEMRENTADO as ir on c.documento=ir.CLIENTES_documento
+	left join VI_ITEMS as i on ir.ITEMS_id=i.id
+	left join VI_TIPOITEM as ti on i.TIPOITEM_id=ti.id
+		WHERE c.documento=#{idcli} ;
+	</select>
 
 </mapper>
