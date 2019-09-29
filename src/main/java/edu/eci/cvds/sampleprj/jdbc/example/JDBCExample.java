@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class JDBCExample {
     
-    public static void main(String args[]){
+    public static void main(String[] args){
         try {
             String url="jdbc:mysql://desarrollo.is.escuelaing.edu.co:3306/bdprueba";
             String driver="com.mysql.jdbc.Driver";
@@ -83,18 +83,15 @@ public class JDBCExample {
         //Crear preparedStatement
         //Asignar parámetros
         //usar 'execute'
-		PreparedStatement insertProduct=null;
+		PreparedStatement insertProduct;
         String insertString="insert into ORD_PRODUCTOS (codigo,nombre,precio) values ( ? ,? ,? )";
 		insertProduct=con.prepareStatement(insertString);
 		insertProduct.setInt(1,codigo);
 		insertProduct.setString(2,nombre);
 		insertProduct.setInt(3,precio);
 		insertProduct.execute();
-		if(insertProduct != null){
-			insertProduct.close();
-		}
-		
-        con.commit();
+		insertProduct.close();
+		con.commit();
         
     }
     
@@ -129,13 +126,8 @@ public class JDBCExample {
 			if(!np.contains(nombreProducto))
 			np.add(nombreProducto);
 		}
-		if(selectProducts != null){
-			selectProducts.close();
-		}
-		if(rs!=null){
-			rs.close();
-		}
-		 
+		selectProducts.close();
+		rs.close();
 		con.commit();
 		
     
@@ -145,7 +137,7 @@ public class JDBCExample {
     
     /**
      * Calcular el costo total de un pedido
-     * @param con
+     * @param con conexión
      * @param codigoPedido código del pedido cuyo total se calculará
      * @return el costo total del pedido (suma de: cantidades*precios)
      */
@@ -169,13 +161,9 @@ public class JDBCExample {
 		if(rs.next()){
 			valorPedido  =rs.getInt("suma");
 		}
-		
-		if(selectValor != null){
-			selectValor.close();
-		}
-		if(rs!=null){
-			rs.close();
-		}
+
+		selectValor.close();
+		rs.close();
 		con.commit();
         return valorPedido;
     }
